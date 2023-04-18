@@ -1,4 +1,3 @@
-import java.io.IOException;
 import com.fazecast.jSerialComm.SerialPort;
 
 /**
@@ -7,8 +6,8 @@ import com.fazecast.jSerialComm.SerialPort;
  * @author Michael Schoeffler (www.mschoeffler.de)
  *
  */
-public class Comms {
-    public static void main(String[] args) throws IOException, InterruptedException {
+public class Arduino_JAVA {
+    public static void main(String[] args) throws InterruptedException {
         SerialPort sp = SerialPort.getCommPort("COM5"); // device name TODO: must be changed
         sp.setComPortParameters(9600, 8, 1, 0); // default connection settings for Arduino
         sp.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0); // block until bytes can be written
@@ -20,21 +19,13 @@ public class Comms {
             return;
         }
 
-        for (int i = 0; i < 9; ++i) {
-            sp.getOutputStream().write(i);
-            sp.getOutputStream().flush();
-            System.out.println("Sent number: " + i);
-            Thread.sleep(1000);
+        while(true){
+            if (sp.bytesAvailable() > 0){
+                byte[] buffer = new byte[sp.bytesAvailable()];
+                sp.readBytes(buffer, buffer.length); // lees de beschikbare bytes in de buffer
+
+                System.out.println(new String(buffer));
+            }
         }
-
-        if (sp.closePort()) {
-            System.out.println("Port is closed :)");
-        } else {
-            System.out.println("Failed to close port :(");
-            return;
-        }
-
-
     }
-
 }
