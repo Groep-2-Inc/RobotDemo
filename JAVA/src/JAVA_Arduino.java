@@ -1,12 +1,6 @@
 import java.io.IOException;
 import com.fazecast.jSerialComm.SerialPort;
 
-/**
- * Simple application that is part of an tutorial.
- * The tutorial shows how to establish a serial connection between a Java and Arduino program with the help of an USB-to-TTL Module.
- * @author Michael Schoeffler (www.mschoeffler.de)
- *
- */
 public class JAVA_Arduino {
     public static void main(String[] args) throws IOException, InterruptedException {
         SerialPort sp = SerialPort.getCommPort("COM5"); // device name TODO: must be changed

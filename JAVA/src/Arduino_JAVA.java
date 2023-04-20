@@ -1,31 +1,63 @@
+import java.util.Scanner;
+
 import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
 
-/**
- * Simple application that is part of an tutorial.
- * The tutorial shows how to establish a serial connection between a Java and Arduino program with the help of an USB-to-TTL Module.
- * @author Michael Schoeffler (www.mschoeffler.de)
- *
- */
 public class Arduino_JAVA {
-    public static void main(String[] args) throws InterruptedException {
-        SerialPort sp = SerialPort.getCommPort("COM5"); // device name TODO: must be changed
-        sp.setComPortParameters(9600, 8, 1, 0); // default connection settings for Arduino
-        sp.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0); // block until bytes can be written
+    SerialPort activePort;
+    SerialPort[] ports = SerialPort.getCommPorts();
 
-        if (sp.openPort()) {
-            System.out.println("Port is open :)");
-        } else {
-            System.out.println("Failed to open port :(");
-            return;
+    // Shows all the available COM ports
+    public void showAllPort() {
+        int i = 0;
+        for(SerialPort port : ports) {
+            System.out.print(i + ". " + port.getDescriptivePortName() + " ");
+            System.out.println(port.getPortDescription());
+            i++;
+        }
+    }
+
+    public void setPort(int portIndex) {
+        activePort = ports[portIndex];
+
+        if (activePort.openPort()) {
+            System.out.println(activePort.getPortDescription() + " port opened.");
         }
 
-        while(true){
-            if (sp.bytesAvailable() > 0){
-                byte[] buffer = new byte[sp.bytesAvailable()];
-                sp.readBytes(buffer, buffer.length); // lees de beschikbare bytes in de buffer
+        activePort.addDataListener(new SerialPortDataListener() {
+            @Override
+            public void serialEvent(SerialPortEvent event) {
+                int size = event.getSerialPort().bytesAvailable();
+                byte[] buffer = new byte[size];
+                event.getSerialPort().readBytes(buffer, size);
 
-                System.out.println(new String(buffer));
+                for(byte b:buffer) {
+                    System.out.print((char) b);
+                }
             }
-        }
+
+            @Override
+            public int getListeningEvents() {
+                return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+            }
+        });
+    }
+
+    public void start() {
+        showAllPort();
+
+        Scanner reader = new Scanner(System.in);
+        System.out.print("Port? ");
+
+        int p = reader.nextInt();
+        setPort(p);
+
+        reader.close();
+    }
+
+    public static void main(String[] args) {
+        Arduino_JAVA mainClass = new Arduino_JAVA();
+        mainClass.start();
     }
 }
