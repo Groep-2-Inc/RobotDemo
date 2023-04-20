@@ -26,30 +26,21 @@ void toJava(int status, String value){
     toJava(500, tekst, ""); --> {"code":500,"value":"NOODSTOP INGEDRUKT"}
 */
 
-StaticJsonDocument<200> fromJava() {
-  StaticJsonDocument<200> json;
-
+int fromJava() {
+  int status = 0;
   if (Serial.available() > 0) {
     // Leest de bytes van de seriële poort
-    // char buffer[200];
-    // int bytesRead = Serial.readBytes(buffer, sizeof(buffer));
+    status = Serial.readString().toInt();
 
-    String txt = Serial.readString();
-
-    // Decodeer de bytes naar een JSON-document
-    DeserializationError error = deserializeJson(json, txt);
-
-    // Controleer of de decoding gelukt is
-    if (error) {
-        Serial.println("Fout bij decoderen van JSON: " + String(error.c_str()));
+    if (status == 200) {
         digitalWrite(9, HIGH);
     } else {
-        // Geef het JSON-document terug
         digitalWrite(8, HIGH);
-        return json;
     }
+
+    return status;
   }
 
-  // Als er geen gegevens zijn, geef dan een leeg JSON-document terug
-  return json;
+  // Als er geen nieuwe data is return dan 
+  return status;
 }

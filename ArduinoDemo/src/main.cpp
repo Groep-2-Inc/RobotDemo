@@ -13,9 +13,7 @@ void setup() {
 }
 
 void loop() {
-  // checkStop(stopButtton);
+  checkStop(stopButtton);
 
-  if(fromJava()["status"] == 200){
-    digitalWrite(8, HIGH);
-  };
+  fromJava();
 }

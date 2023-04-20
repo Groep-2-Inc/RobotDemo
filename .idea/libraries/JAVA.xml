@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="JAVA">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/JAVA/out/production/JAVA/jSerialComm-2.9.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/JAVA/out/production/JAVA/json-20200518.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

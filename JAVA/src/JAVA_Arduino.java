@@ -1,9 +1,7 @@
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import com.fazecast.jSerialComm.SerialPort;
-import org.json.JSONObject;
 
 public class JAVA_Arduino {
     public static void main(String[] args) throws IOException {
@@ -18,13 +16,9 @@ public class JAVA_Arduino {
             return;
         }
 
-        JSONObject json = new JSONObject( );
-        json.put("status", 200);
-        json.put("value", "test");
-
-        String message = json.toString();
+        String message = "200";
         System.out.println(message);
-        byte[] buffer = message.getBytes(StandardCharsets.UTF_8);
+        byte[] buffer = message.getBytes();
 
         System.out.println(Arrays.toString(buffer));
 
