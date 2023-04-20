@@ -1,11 +1,15 @@
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 import com.fazecast.jSerialComm.SerialPort;
+import org.json.JSONObject;
 
 public class JAVA_Arduino {
-    public static void main(String[] args) throws IOException, InterruptedException {
-        SerialPort sp = SerialPort.getCommPort("COM5"); // device name TODO: must be changed
-        sp.setComPortParameters(9600, 8, 1, 0); // default connection settings for Arduino
-        sp.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0); // block until bytes can be written
+    public static void main(String[] args) throws IOException {
+        SerialPort sp = SerialPort.getCommPort("COM5");
+        sp.setComPortParameters(9600, 8, 1, 0);
+        sp.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
 
         if (sp.openPort()) {
             System.out.println("Port is open :)");
@@ -14,21 +18,23 @@ public class JAVA_Arduino {
             return;
         }
 
-        for (int i = 0; i < 9; ++i) {
-            sp.getOutputStream().write(i);
-            sp.getOutputStream().flush();
-            System.out.println("Sent number: " + i);
-            Thread.sleep(1000);
-        }
+        JSONObject json = new JSONObject( );
+        json.put("status", 200);
+        json.put("value", "test");
+
+        String message = json.toString();
+        System.out.println(message);
+        byte[] buffer = message.getBytes(StandardCharsets.UTF_8);
+
+        System.out.println(Arrays.toString(buffer));
+
+        sp.getOutputStream().write(buffer);
+        sp.getOutputStream().flush();
 
         if (sp.closePort()) {
             System.out.println("Port is closed :)");
         } else {
             System.out.println("Failed to close port :(");
-            return;
         }
-
-
     }
-
 }
