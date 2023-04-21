@@ -15,6 +15,7 @@ void setup() {
   pinMode(A5, INPUT);
   pinMode(5, INPUT_PULLUP);
 
+  motorSetup();
   Serial.begin(9600);
 }
 
